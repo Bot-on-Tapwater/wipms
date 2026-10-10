@@ -1,0 +1,38 @@
+// Permission codes the frontend checks. They match the codes in
+// backend/app/constants/permissions.py. Which role has which code is decided
+// by the backend; the frontend only asks "does this user have it?".
+// Listing them here lets TypeScript catch typos in can("...") and <Can>.
+
+export type Permission =
+  | "users.view_all"
+  | "projects.view_all"
+  | "projects.create"
+  | "projects.edit"
+  | "projects.delete"
+  | "projects.assign_supervisors"
+  | "projects.assign_subcontractors"
+  | "projects.unassign_subcontractors"
+  | "projects.fund_wallet"
+  | "projects.view_wallet"
+  | "works.create"
+  | "works.edit"
+  | "works.delete"
+  | "works.assign_subcontractor"
+  | "works.upload_images"
+  | "works.comment_as_contractor_supervisor"
+  | "works.comment_as_consultant_supervisor"
+  | "works.approve_as_consultant"
+  | "works.approve_as_contractor_supervisor"
+  | "works.approve_attendance"
+  | "works.approve_cost"
+  | "works.manage_labourers"
+  | "payments.request"
+  | "payments.approve_as_contractor_supervisor"
+  | "payments.approve_as_main_contractor"
+  | "payments.request_retention"
+  | "payments.approve_retention"
+  | "payments.view"
+  | "labourers.create"
+  | "labourers.edit"
+  | "labourers.view"
+  | "reports.view";

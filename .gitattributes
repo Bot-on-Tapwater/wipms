@@ -1,0 +1,2 @@
+# Keep Unix line endings so shell scripts work inside Docker.
+* text=auto eol=lf

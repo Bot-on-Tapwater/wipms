@@ -1,0 +1,5 @@
+{% extends "email/base.html" %}
+{% block content %}
+<p>Hello {{ recipient_name }},</p>
+<p>Your <strong>{{ report_title }}</strong> is attached as a PDF.</p>
+{% endblock %}

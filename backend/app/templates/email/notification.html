@@ -1,0 +1,15 @@
+{% extends "email/base.html" %}
+{% block content %}
+<p>Hello {{ recipient_name }},</p>
+<p>{{ message }}</p>
+{% if work %}
+<table style="border-collapse: collapse; margin-top: 12px;">
+  <tr><td style="padding: 4px 12px 4px 0;"><strong>Project</strong></td><td>{{ work.project.name }}</td></tr>
+  <tr><td style="padding: 4px 12px 4px 0;"><strong>Work</strong></td><td>{{ work.title }}</td></tr>
+  <tr><td style="padding: 4px 12px 4px 0;"><strong>Total cost</strong></td><td>KES {{ "{:,.2f}".format(work.total_cost) }}</td></tr>
+</table>
+{% endif %}
+{% if work_url %}
+<p style="margin-top: 20px;"><a href="{{ work_url }}" style="background: #0f766e; color: #fff; padding: 10px 18px; text-decoration: none; border-radius: 4px;">Open work</a></p>
+{% endif %}
+{% endblock %}

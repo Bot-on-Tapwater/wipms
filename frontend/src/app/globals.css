@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  /* System fonts: nothing is downloaded, so builds also work offline. */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-zinc-50);
+  color: var(--color-zinc-900);
+}
