@@ -43,7 +43,7 @@ export default function RegisterPage() {
     try {
       await api.post("/auth/register", form.values);
       await login(form.values.email.trim(), form.values.password);
-      toast.success("Account created. Welcome to Ijenga!");
+      toast.success("Account created. Welcome to WIPMS!");
       router.replace("/dashboard");
     } catch (error) {
       toast.error(errorMessage(error));
@@ -54,13 +54,31 @@ export default function RegisterPage() {
   return (
     <>
       <h1 className="text-xl font-semibold">Create an account</h1>
-      <p className="mt-1 text-sm text-zinc-500">Your role decides what you can do in Ijenga.</p>
+      <p className="mt-1 text-sm text-zinc-500">
+        Your role decides what you can do in WIPMS.
+      </p>
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
-          <Input label="First name" required autoComplete="given-name" {...form.field("first_name")} />
-          <Input label="Last name" required autoComplete="family-name" {...form.field("last_name")} />
+          <Input
+            label="First name"
+            required
+            autoComplete="given-name"
+            {...form.field("first_name")}
+          />
+          <Input
+            label="Last name"
+            required
+            autoComplete="family-name"
+            {...form.field("last_name")}
+          />
         </div>
-        <Input label="Email" type="email" required autoComplete="email" {...form.field("email")} />
+        <Input
+          label="Email"
+          type="email"
+          required
+          autoComplete="email"
+          {...form.field("email")}
+        />
         <Input
           label="Phone number"
           required
@@ -69,7 +87,13 @@ export default function RegisterPage() {
           hint="Starts with 254, e.g. 254712345678"
           {...form.field("phone_number")}
         />
-        <Select label="Role" required options={roleOptions} placeholder="Choose your role" {...form.field("role")} />
+        <Select
+          label="Role"
+          required
+          options={roleOptions}
+          placeholder="Choose your role"
+          {...form.field("role")}
+        />
         <Input
           label="Password"
           type="password"
@@ -92,7 +116,10 @@ export default function RegisterPage() {
       </form>
       <p className="mt-6 text-center text-sm text-zinc-500">
         Already registered?{" "}
-        <Link href="/login" className="font-medium text-emerald-700 hover:underline">
+        <Link
+          href="/login"
+          className="font-medium text-emerald-700 hover:underline"
+        >
           Log in
         </Link>
       </p>

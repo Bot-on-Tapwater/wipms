@@ -7,7 +7,7 @@ export function Logo() {
       <span className="flex size-8 items-center justify-center rounded-lg bg-emerald-600 text-white">
         <HardHat className="size-5" aria-hidden />
       </span>
-      Ijenga
+      WIPMS
     </span>
   );
 }
