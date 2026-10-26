@@ -88,6 +88,35 @@ Notes on what changed compared with the old backend, and why.
 - Profile page: change details and password.
 - Toasts for every action, and a warning when some payments in a payout fail.
 
+## Insights page (labourer stats)
+
+A new "Insights" page shows labourers by trade, project, gender and age
+group, with days worked, amount paid, numbers per month and the labourers
+who came back most often. Clicking a bar, a month, a project or a trade
+filters the whole page.
+
+- **Who sees it.** Only the super admin (every project) and main
+  contractors (only projects they created or are on the team of). Main
+  contractors can see all projects elsewhere (`projects.view_all`), but not
+  here. Two new permission codes: `stats.view` and `stats.view_all`. Run
+  `python -m app.scripts.seed_permissions` after deploying.
+- **Gender and age.** Both are new optional fields on a labourer. Age is
+  typed in (18 to 80) and stored as a birth year, so it stays right as years
+  pass. They are only shown as totals, never next to a name. The gender
+  list comes from `/metadata/choices` (`genders`). Migration `0002` adds
+  the two columns.
+- **Trade.** A labourer's trade is their current title, so pay per trade
+  uses the title they have today.
+- **What is counted.**
+  - Days worked include every work, whatever its payment status.
+  - Amount paid counts only successful labourer payments.
+  - "Registered" counts labourers whose record was created in the period.
+    For a main contractor that means labourers who have worked on their
+    projects, even if they signed up on another project first.
+- **Dates.** The From and To filters use the date the work was created
+  (days worked), the date of the payment (amount paid) and the date the
+  labourer was registered (registered).
+
 ## Open questions
 
 1. Which emails should be allowed to register as main contractor

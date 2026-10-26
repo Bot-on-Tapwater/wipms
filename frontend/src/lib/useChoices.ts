@@ -1,6 +1,6 @@
 "use client";
 
-// Dropdown options (labourer titles, task categories, roles) from
+// Dropdown options (labourer titles, genders, task categories, roles) from
 // GET /metadata/choices. Loaded once and shared by every form.
 
 import { useEffect, useState } from "react";
@@ -20,7 +20,7 @@ function loadChoices(): Promise<Choices> {
   return cached;
 }
 
-const EMPTY: Choices = { labourer_titles: [], task_categories: [], roles: [] };
+const EMPTY: Choices = { labourer_titles: [], genders: [], task_categories: [], roles: [] };
 
 /** Dropdown options for forms; empty lists until they have loaded. */
 export function useChoices(): Choices {

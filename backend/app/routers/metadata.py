@@ -3,7 +3,7 @@ from typing import Dict, List
 
 from fastapi import APIRouter
 
-from app.constants.choices import LabourerTitle, TaskCategory, label_for
+from app.constants.choices import Gender, LabourerTitle, TaskCategory, label_for
 from app.constants.roles import Role
 
 router = APIRouter(prefix="/metadata", tags=["Metadata"])
@@ -28,7 +28,7 @@ def _choices(enum_class: type) -> List[Dict[str, str]]:
 @router.get("/choices")
 def get_choices() -> Dict[str, List[Dict[str, str]]]:
     """
-    Return labourer titles, task categories and roles (public endpoint).
+    Return labourer titles, genders, task categories and roles (public endpoint).
 
     Returns:
         Dict[str, List[Dict[str, str]]]: Each choice list as value and label pairs.
@@ -39,6 +39,7 @@ def get_choices() -> Dict[str, List[Dict[str, str]]]:
             roles.append({"value": role.value, "label": label_for(role.value.replace("-", " "))})
     return {
         "labourer_titles": _choices(LabourerTitle),
+        "genders": _choices(Gender),
         "task_categories": _choices(TaskCategory),
         "roles": roles,
     }

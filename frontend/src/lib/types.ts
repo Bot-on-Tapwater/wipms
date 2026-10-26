@@ -43,6 +43,7 @@ export interface Choice {
 
 export interface Choices {
   labourer_titles: Choice[];
+  genders: Choice[];
   task_categories: Choice[];
   roles: Choice[];
 }
@@ -120,6 +121,8 @@ export interface Labourer {
   phone_number: string;
   daily_rate: string;
   overhead_cost: string;
+  gender: string | null;
+  age: number | null;
   project_lifetime_approved_working_days: number;
   created_at: string;
   updated_at: string;
@@ -205,4 +208,59 @@ export interface Report {
   columns: string[];
   rows: string[][];
   summary: ReportItem[];
+}
+
+export interface StatsTotals {
+  projects: number;
+  registered: number;
+  labourers: number;
+  days_worked: number;
+  amount_paid: string;
+}
+
+export interface StatsBucket {
+  key: string;
+  label: string;
+  labourers: number;
+  days_worked: number;
+  amount_paid: string;
+}
+
+export interface ProjectStats {
+  id: string;
+  name: string;
+  location: string;
+  labourers: number;
+  days_worked: number;
+  amount_paid: string;
+  trades: StatsBucket[];
+}
+
+export interface MonthStats {
+  month: string; // "2026-10"
+  registered: number;
+  labourers: number;
+  days_worked: number;
+}
+
+export interface TopLabourer {
+  id: string;
+  name: string;
+  trade: string;
+  works: number;
+  projects: number;
+  days_worked: number;
+  amount_paid: string;
+}
+
+export interface LabourStats {
+  scope: "all" | "mine";
+  projects: { id: string; name: string }[];
+  totals: StatsTotals;
+  by_trade: StatsBucket[];
+  by_project: ProjectStats[];
+  by_gender: StatsBucket[];
+  by_age_group: StatsBucket[];
+  by_month: MonthStats[];
+  top_labourers: TopLabourer[];
 }

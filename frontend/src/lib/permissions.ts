@@ -35,4 +35,6 @@ export type Permission =
   | "labourers.create"
   | "labourers.edit"
   | "labourers.view"
-  | "reports.view";
+  | "reports.view"
+  | "stats.view"
+  | "stats.view_all";

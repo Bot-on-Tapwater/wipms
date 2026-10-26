@@ -1,11 +1,12 @@
 """Business logic for labourers, including autocomplete search."""
 import uuid
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
 from app.constants.choices import PaymentStatus
+from app.core.database import utc_now
 from app.core.exceptions import AppError, ForbiddenError, NotFoundError
 from app.models.labourer import Labourer
 from app.models.user import User
@@ -48,6 +49,36 @@ def get_by_national_id(db: Session, national_id_number: str) -> Optional[Laboure
     )
 
 
+def birth_year_from_age(age: Optional[int]) -> Optional[int]:
+    """
+    Turn the age typed in into a year of birth, so age groups stay correct over time.
+
+    Args:
+        age (Optional[int]): Age in years, or None when not given.
+
+    Returns:
+        Optional[int]: Year of birth, or None when not given.
+    """
+    if age is None:
+        return None
+    return utc_now().year - age
+
+
+def gender_value(data: Union[LabourerCreate, LabourerUpdate]) -> Optional[str]:
+    """
+    Return the gender of the request as text.
+
+    Args:
+        data (Union[LabourerCreate, LabourerUpdate]): Validated request body.
+
+    Returns:
+        Optional[str]: ``male`` or ``female``, or None when not given.
+    """
+    if data.gender is None:
+        return None
+    return data.gender.value
+
+
 def create_labourer(db: Session, data: LabourerCreate, user: User) -> Labourer:
     """
     Register a new labourer. National ID numbers must be unique.
@@ -72,6 +103,8 @@ def create_labourer(db: Session, data: LabourerCreate, user: User) -> Labourer:
         phone_number=data.phone_number,
         daily_rate=data.daily_rate,
         overhead_cost=data.overhead_cost,
+        gender=gender_value(data),
+        birth_year=birth_year_from_age(data.age),
         created_by_id=user.id,
     )
     db.add(labourer)
@@ -115,6 +148,20 @@ def _reset_unpaid_works(labourer: Labourer) -> None:
             work.reset_payment_request()
 
 
+def _update_gender_and_age(labourer: Labourer, data: LabourerUpdate) -> None:
+    """
+    Set or clear gender and age, but only when the request includes them.
+
+    Args:
+        labourer (Labourer): The labourer.
+        data (LabourerUpdate): Validated request body.
+    """
+    if "gender" in data.model_fields_set:
+        labourer.gender = gender_value(data)
+    if "age" in data.model_fields_set:
+        labourer.birth_year = birth_year_from_age(data.age)
+
+
 def update_labourer(db: Session, labourer: Labourer, data: LabourerUpdate, user: User) -> Labourer:
     """
     Update a labourer's details. A pay change withdraws approvals on unpaid works.
@@ -136,6 +183,7 @@ def update_labourer(db: Session, labourer: Labourer, data: LabourerUpdate, user:
         labourer.title = data.title.value
     if data.phone_number is not None:
         labourer.phone_number = data.phone_number
+    _update_gender_and_age(labourer, data)
     pay_changed = False
     if data.daily_rate is not None and data.daily_rate != labourer.daily_rate:
         labourer.daily_rate = data.daily_rate

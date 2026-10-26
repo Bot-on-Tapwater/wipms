@@ -58,6 +58,10 @@ PERMISSIONS: Dict[str, str] = {
     "labourers.view": "View and search labourers",
     # Reports
     "reports.view": "Generate and print reports",
+    # Insights
+    "stats.view": "See labour insights (trades, sites, gender, age groups, pay per trade) "
+                  "for projects the user created or is on",
+    "stats.view_all": "See labour insights for every project on the platform",
 }
 
 _MC = Role.MAIN_CONTRACTOR.value
@@ -100,6 +104,8 @@ DEFAULT_ROLE_PERMISSIONS: Dict[str, List[str]] = {
     "labourers.edit": [_MC, _CS, _SUB],
     "labourers.view": [_MC, _CS, _CON, _SUB],
     "reports.view": [_MC, _CS, _CON, _SUB],
+    "stats.view": [_MC],
+    "stats.view_all": [],
 }
 
 

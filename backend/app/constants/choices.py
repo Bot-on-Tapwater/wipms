@@ -70,6 +70,13 @@ class LabourerTitle(str, Enum):
     OTHER = "other"
 
 
+class Gender(str, Enum):
+    """Gender of a labourer. Optional, and only ever shown as totals."""
+
+    MALE = "male"
+    FEMALE = "female"
+
+
 class PaymentStatus(str, Enum):
     """Payment state of a subcontracted work."""
 

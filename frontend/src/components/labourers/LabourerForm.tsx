@@ -19,10 +19,12 @@ export function labourerValues(labourer?: Labourer) {
     phone_number: labourer?.phone_number || "",
     daily_rate: labourer?.daily_rate || "",
     overhead_cost: labourer?.overhead_cost || "0",
+    gender: labourer?.gender || "",
+    age: labourer?.age ? String(labourer.age) : "",
   };
 }
 
-type DetailName = "title" | "phone_number" | "daily_rate" | "overhead_cost";
+type DetailName = "title" | "phone_number" | "daily_rate" | "overhead_cost" | "gender" | "age";
 
 interface LabourerDetailFieldsProps {
   // form.field from useForm()
@@ -33,11 +35,11 @@ interface LabourerDetailFieldsProps {
 }
 
 /**
- * Title, phone and pay fields shared by the labourer form and the
+ * Title, phone, pay, gender and age fields shared by the labourer form and the
  * "add labourer to work" form. Name and ID inputs are added by each form.
  */
 export function LabourerDetailFields({ field }: LabourerDetailFieldsProps) {
-  const { labourer_titles } = useChoices();
+  const { labourer_titles, genders } = useChoices();
   return (
     <>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -77,6 +79,26 @@ export function LabourerDetailFields({ field }: LabourerDetailFieldsProps) {
           inputMode="decimal"
           hint="Paid once per work, on top of the daily rate."
           {...field("overhead_cost")}
+        />
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Select
+          label="Gender"
+          options={genders}
+          placeholder="Not given"
+          hint="Optional. Only counted in totals."
+          {...field("gender")}
+        />
+        <Input
+          label="Age"
+          type="number"
+          min="18"
+          max="80"
+          step="1"
+          inputMode="numeric"
+          placeholder="Not given"
+          hint="Optional. Between 18 and 80."
+          {...field("age")}
         />
       </div>
     </>

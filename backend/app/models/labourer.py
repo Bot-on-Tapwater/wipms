@@ -6,7 +6,7 @@ from typing import List, Optional
 from sqlalchemy import ForeignKey, Integer, Numeric, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.database import Base, TimestampMixin
+from app.core.database import Base, TimestampMixin, utc_now
 from app.models.user import User
 from app.models.work import WorkLabourer
 
@@ -24,6 +24,8 @@ class Labourer(TimestampMixin, Base):
         daily_rate: Pay per day worked in KES
         overhead_cost: Extra amount paid once per work in KES
         project_lifetime_approved_working_days: Days worked on all works that have been paid
+        gender: male or female, or None when not given
+        birth_year: Year of birth worked out from the age typed in, or None when not given
         created_by_id: User who registered the labourer
         work_links: Works the labourer is assigned to, with the days worked on each
     """
@@ -38,6 +40,8 @@ class Labourer(TimestampMixin, Base):
     daily_rate: Mapped[Decimal] = mapped_column(Numeric(12, 2))
     overhead_cost: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=Decimal("0"))
     project_lifetime_approved_working_days: Mapped[int] = mapped_column(Integer, default=0)
+    gender: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
+    birth_year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     created_by_id: Mapped[Optional[uuid.UUID]] = mapped_column(
         Uuid, ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
@@ -46,3 +50,15 @@ class Labourer(TimestampMixin, Base):
     work_links: Mapped[List[WorkLabourer]] = relationship(
         back_populates="labourer", cascade="all, delete-orphan"
     )
+
+    @property
+    def age(self) -> Optional[int]:
+        """
+        Age this year, worked out from the birth year.
+
+        Returns:
+            Optional[int]: Age in years, or None when not given.
+        """
+        if self.birth_year is None:
+            return None
+        return utc_now().year - self.birth_year

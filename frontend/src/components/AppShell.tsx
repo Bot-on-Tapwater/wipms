@@ -7,6 +7,7 @@
 import {
   Banknote,
   Building2,
+  ChartColumn,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -40,6 +41,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/labourers", label: "Labourers", icon: Users, permission: "labourers.view" },
   { href: "/payments", label: "Payments", icon: Banknote, permission: "payments.view" },
   { href: "/reports", label: "Reports", icon: FileText, permission: "reports.view" },
+  { href: "/insights", label: "Insights", icon: ChartColumn, permission: "stats.view" },
   { href: "/profile", label: "My profile", icon: UserRound },
 ];
 

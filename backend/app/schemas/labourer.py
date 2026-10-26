@@ -6,8 +6,11 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from app.constants.choices import LabourerTitle
+from app.constants.choices import Gender, LabourerTitle
 from app.schemas.common import ORMModel, validate_phone_number
+
+MIN_AGE = 18
+MAX_AGE = 80
 
 
 def validate_national_id(value: str) -> str:
@@ -26,8 +29,23 @@ def validate_national_id(value: str) -> str:
     return value
 
 
+def blank_to_none(value: object) -> object:
+    """
+    Treat an empty form field as "not given".
+
+    Args:
+        value (object): Value sent by the form.
+
+    Returns:
+        object: None for an empty string, otherwise the value unchanged.
+    """
+    if isinstance(value, str) and value.strip() == "":
+        return None
+    return value
+
+
 class LabourerCreate(BaseModel):
-    """Data needed to register a labourer."""
+    """Data needed to register a labourer. Gender and age are optional."""
 
     name: str = Field(min_length=2, max_length=100)
     title: LabourerTitle
@@ -35,6 +53,22 @@ class LabourerCreate(BaseModel):
     phone_number: str
     daily_rate: Decimal = Field(gt=0, max_digits=12, decimal_places=2)
     overhead_cost: Decimal = Field(default=Decimal("0"), ge=0, max_digits=12, decimal_places=2)
+    gender: Optional[Gender] = None
+    age: Optional[int] = Field(default=None, ge=MIN_AGE, le=MAX_AGE)
+
+    @field_validator("gender", "age", mode="before")
+    @classmethod
+    def clean_optional(cls, value: object) -> object:
+        """
+        An empty gender or age field means the detail was not given.
+
+        Args:
+            value (object): Value sent by the form.
+
+        Returns:
+            object: None for an empty field, otherwise the value unchanged.
+        """
+        return blank_to_none(value)
 
     @field_validator("name")
     @classmethod
@@ -80,13 +114,33 @@ class LabourerCreate(BaseModel):
 
 
 class LabourerUpdate(BaseModel):
-    """Editable labourer fields. All optional."""
+    """
+    Editable labourer fields. All optional.
+
+    Sending ``gender`` or ``age`` as null (or empty) clears it.
+    """
 
     name: Optional[str] = Field(default=None, min_length=2, max_length=100)
     title: Optional[LabourerTitle] = None
     phone_number: Optional[str] = None
     daily_rate: Optional[Decimal] = Field(default=None, gt=0, max_digits=12, decimal_places=2)
     overhead_cost: Optional[Decimal] = Field(default=None, ge=0, max_digits=12, decimal_places=2)
+    gender: Optional[Gender] = None
+    age: Optional[int] = Field(default=None, ge=MIN_AGE, le=MAX_AGE)
+
+    @field_validator("gender", "age", mode="before")
+    @classmethod
+    def clean_optional(cls, value: object) -> object:
+        """
+        An empty gender or age field means the detail is cleared.
+
+        Args:
+            value (object): Value sent by the form.
+
+        Returns:
+            object: None for an empty field, otherwise the value unchanged.
+        """
+        return blank_to_none(value)
 
     @field_validator("phone_number")
     @classmethod
@@ -116,6 +170,8 @@ class LabourerRead(ORMModel):
     daily_rate: Decimal
     overhead_cost: Decimal
     project_lifetime_approved_working_days: int
+    gender: Optional[str]
+    age: Optional[int]
     created_at: datetime
     updated_at: datetime
 

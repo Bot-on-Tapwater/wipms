@@ -22,6 +22,7 @@ from app.routers import (
     permissions,
     projects,
     reports,
+    stats,
     users,
     works,
 )
@@ -96,3 +97,4 @@ app.include_router(works.router, prefix=API_PREFIX)
 app.include_router(labourers.router, prefix=API_PREFIX)
 app.include_router(payments.router, prefix=API_PREFIX)
 app.include_router(reports.router, prefix=API_PREFIX)
+app.include_router(stats.router, prefix=API_PREFIX)
